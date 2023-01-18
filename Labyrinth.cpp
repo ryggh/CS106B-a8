@@ -1,12 +1,61 @@
 #include "Labyrinth.h"
+#include "set.h"
 using namespace std;
 
+void pickUp(MazeCell* start, Set<string>& items) {
+
+    if (start->whatsHere == Item::NOTHING) {
+    } else if (start->whatsHere == Item::POTION) {
+        items.remove("potion");
+        } else if (start->whatsHere == Item::SPELLBOOK) {
+            items.remove("spellbook");
+        } else if (start->whatsHere == Item::WAND) {
+            items.remove("wand");
+        }
+}
+
 bool isPathToFreedom(MazeCell* start, const string& moves) {
-    /* TODO: Delete this comment and the next few lines, then implement
-     * this function.
-     */
-    (void) start;
-    (void) moves;
+    Set<string> items = {"spellbook", "potion", "wand"};
+    pickUp(start, items);
+    for (char orientation: moves) {
+        switch (orientation) {
+        case 'N':
+            if (start->north != nullptr) {
+                start = start->north;
+                pickUp(start, items);
+            } else {
+                return false;
+            }
+            break;
+        case 'W':
+            if (start->west != nullptr) {
+                start = start->west;
+                pickUp(start, items);
+            } else {
+                return false;
+            }
+            break;
+        case 'E':
+            if (start->east != nullptr) {
+                start = start->east;
+                pickUp(start, items);
+            } else {
+                return false;
+            }
+            break;
+        case 'S':
+            if (start->south != nullptr) {
+                start = start->south;
+                pickUp(start, items);
+            } else {
+                return false;
+            }
+            break;
+        }
+    }
+    if (items.isEmpty()) {
+        return true;
+    }
     return false;
 }
 
